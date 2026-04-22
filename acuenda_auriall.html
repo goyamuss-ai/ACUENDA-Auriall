@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACUENDA AuriAll — Infraestrutura de Evidência para Inclusão PcD</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Space+Mono:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:    #0a0705;
+  --gold:   #c8922a;
+  --amber:  #e8b84b;
+  --ember:  #d4522a;
+  --cream:  #f0e6d0;
+  --sage:   #3a6b4a;
+  --fog:    #8a7a6a;
+  --paper:  #1a1208;
+  --glow:   rgba(200,146,42,0.15);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--ink);
+  color: var(--cream);
+  font-family: 'Lato', sans-serif;
+  overflow-x: hidden;
+}
+
+/* ── GRAIN OVERLAY ── */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 9999; opacity: .6;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 1.2rem 5vw;
+  display: flex; justify-content: space-between; align-items: center;
+  background: linear-gradient(to bottom, rgba(10,7,5,.95), transparent);
+}
+.nav-logo {
+  font-family: 'Space Mono', monospace;
+  font-size: .8rem; letter-spacing: .2em;
+  color: var(--gold); text-transform: uppercase;
+}
+.nav-links { display: flex; gap: 2.5rem; list-style: none; }
+.nav-links a {
+  font-family: 'Space Mono', monospace; font-size: .65rem;
+  text-transform: uppercase; letter-spacing: .15em;
+  color: var(--fog); text-decoration: none; transition: color .3s;
+}
+.nav-links a:hover { color: var(--amber); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 12vh 5vw 8vh;
+  position: relative; overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 70% 40%, rgba(200,146,42,.08) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 40% at 20% 80%, rgba(212,82,42,.06) 0%, transparent 60%);
+}
+.hero-orbit {
+  position: absolute; right: -5vw; top: 50%; transform: translateY(-50%);
+  width: 55vw; height: 55vw; max-width: 700px; max-height: 700px;
+  opacity: .12;
+}
+.orbit-ring {
+  position: absolute; border-radius: 50%;
+  border: 1px solid var(--gold);
+  animation: orbit-spin linear infinite;
+}
+.orbit-ring:nth-child(1) { inset: 0; animation-duration: 40s; }
+.orbit-ring:nth-child(2) { inset: 12%; animation-duration: 30s; animation-direction: reverse; }
+.orbit-ring:nth-child(3) { inset: 25%; animation-duration: 20s; border-color: var(--ember); }
+.orbit-ring:nth-child(4) { inset: 40%; animation-duration: 15s; animation-direction: reverse; }
+.orbit-dot {
+  position: absolute; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--amber); top: -3px; left: 50%; transform: translateX(-50%);
+}
+@keyframes orbit-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+.hero-kicker {
+  font-family: 'Space Mono', monospace; font-size: .7rem;
+  text-transform: uppercase; letter-spacing: .25em;
+  color: var(--gold); margin-bottom: 2rem;
+  display: flex; align-items: center; gap: 1rem;
+  opacity: 0; animation: fadeUp .8s .2s forwards;
+}
+.hero-kicker::before {
+  content: ''; width: 40px; height: 1px; background: var(--gold);
+}
+.hero-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(3.5rem, 9vw, 8rem);
+  font-weight: 900; line-height: .95;
+  letter-spacing: -.03em; margin-bottom: .2rem;
+  opacity: 0; animation: fadeUp .8s .4s forwards;
+}
+.hero-title .line-2 {
+  color: var(--gold); font-style: italic; display: block;
+}
+.hero-title .line-3 {
+  color: var(--fog); font-size: .55em; font-weight: 700;
+  letter-spacing: .1em; display: block; margin-top: .3em;
+}
+.hero-desc {
+  max-width: 52ch; font-size: 1.05rem; line-height: 1.75;
+  color: rgba(240,230,208,.7); margin: 2.5rem 0 3rem;
+  opacity: 0; animation: fadeUp .8s .6s forwards;
+}
+.hero-stats {
+  display: flex; gap: 3rem; flex-wrap: wrap;
+  opacity: 0; animation: fadeUp .8s .8s forwards;
+}
+.hero-stat-n {
+  font-family: 'Playfair Display', serif; font-size: 3rem;
+  font-weight: 900; line-height: 1; color: var(--amber);
+  display: block;
+}
+.hero-stat-l {
+  font-family: 'Space Mono', monospace; font-size: .62rem;
+  text-transform: uppercase; letter-spacing: .12em; color: var(--fog);
+}
+.hero-cta {
+  display: inline-flex; align-items: center; gap: .8rem;
+  margin-top: 3rem; padding: .9rem 2.2rem;
+  border: 1px solid var(--gold); color: var(--gold);
+  font-family: 'Space Mono', monospace; font-size: .72rem;
+  text-transform: uppercase; letter-spacing: .15em;
+  text-decoration: none; cursor: pointer; background: transparent;
+  transition: all .3s; opacity: 0; animation: fadeUp .8s 1s forwards;
+}
+.hero-cta:hover { background: var(--glow); }
+.hero-cta::after { content: '↓'; font-size: 1rem; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── SEÇÕES ── */
+section { padding: 8vw 5vw; position: relative; }
+.section-rule {
+  width: 100%; height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+  opacity: .3; margin: 0 0 5rem;
+}
+.section-kicker {
+  font-family: 'Space Mono', monospace; font-size: .65rem;
+  text-transform: uppercase; letter-spacing: .2em; color: var(--gold);
+  margin-bottom: 1rem;
+}
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 700; line-height: 1.1; letter-spacing: -.02em;
+  margin-bottom: 1.5rem;
+}
+.section-title em { color: var(--gold); font-style: italic; }
+
+/* ── PIPELINE ── */
+#pipeline { background: var(--paper); }
+.pipeline-wrap {
+  display: flex; align-items: stretch;
+  gap: 0; overflow-x: auto;
+  margin-top: 4rem;
+}
+.pipeline-step {
+  flex: 1; min-width: 160px;
+  padding: 2.5rem 1.8rem;
+  border: 1px solid rgba(200,146,42,.2);
+  border-right: none; position: relative;
+  cursor: pointer; transition: background .3s;
+  opacity: 0; transform: translateY(20px);
+  transition: background .3s, opacity .6s, transform .6s;
+}
+.pipeline-step.visible { opacity: 1; transform: translateY(0); }
+.pipeline-step:last-child { border-right: 1px solid rgba(200,146,42,.2); }
+.pipeline-step:hover { background: var(--glow); }
+.pipeline-step.active { background: rgba(200,146,42,.1); border-color: var(--gold); }
+.step-num {
+  font-family: 'Space Mono', monospace; font-size: .6rem;
+  color: var(--gold); letter-spacing: .15em; margin-bottom: 1rem;
+}
+.step-icon { font-size: 2rem; margin-bottom: 1rem; display: block; }
+.step-name {
+  font-family: 'Playfair Display', serif; font-size: 1.1rem;
+  font-weight: 700; margin-bottom: .5rem;
+}
+.step-desc { font-size: .82rem; color: var(--fog); line-height: 1.6; }
+.step-arrow {
+  position: absolute; right: -14px; top: 50%;
+  transform: translateY(-50%); color: var(--gold);
+  font-size: 1.2rem; z-index: 1;
+  background: var(--paper); padding: 0 2px;
+}
+.pipeline-step:last-child .step-arrow { display: none; }
+
+/* Detail panel */
+.pipeline-detail {
+  margin-top: 1px; padding: 2.5rem 2rem;
+  border: 1px solid rgba(200,146,42,.2);
+  border-top: 3px solid var(--gold);
+  display: none; animation: fadeIn .4s ease;
+}
+.pipeline-detail.open { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+.detail-text { font-size: .9rem; color: rgba(240,230,208,.75); line-height: 1.8; }
+.detail-code {
+  font-family: 'Space Mono', monospace; font-size: .72rem;
+  background: rgba(0,0,0,.4); padding: 1.5rem;
+  color: var(--amber); line-height: 2; border-left: 3px solid var(--gold);
+  overflow-x: auto;
+}
+@keyframes fadeIn { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── DASHBOARD ── */
+#dashboard { background: var(--ink); }
+.dash-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1px; background: rgba(200,146,42,.15);
+  margin-top: 4rem; border: 1px solid rgba(200,146,42,.15);
+}
+.dash-card {
+  background: var(--ink); padding: 2.5rem 2rem;
+  position: relative; overflow: hidden;
+}
+.dash-card-title {
+  font-family: 'Space Mono', monospace; font-size: .65rem;
+  text-transform: uppercase; letter-spacing: .15em;
+  color: var(--fog); margin-bottom: 2rem;
+  display: flex; align-items: center; gap: .8rem;
+}
+.dash-card-title::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--gold); flex-shrink: 0;
+}
+/* Clusters */
+.cluster-bars { display: flex; flex-direction: column; gap: 1.5rem; }
+.cluster-row { }
+.cluster-label {
+  display: flex; justify-content: space-between;
+  font-size: .82rem; margin-bottom: .5rem;
+}
+.cluster-label span { font-family: 'Space Mono', monospace; font-size: .72rem; color: var(--fog); }
+.bar-track { height: 8px; background: rgba(255,255,255,.05); border-radius: 0; overflow: hidden; }
+.bar-fill {
+  height: 100%; border-radius: 0; width: 0;
+  transition: width 1.5s cubic-bezier(.16,1,.3,1);
+}
+.bar-arq { background: linear-gradient(to right, var(--ember), #e87a55); }
+.bar-ati { background: linear-gradient(to right, var(--gold), var(--amber)); }
+.bar-com { background: linear-gradient(to right, var(--sage), #5a9b6a); }
+
+/* Som grid */
+.som-grid {
+  font-family: 'Space Mono', monospace; font-size: .75rem;
+  line-height: 1.5; letter-spacing: .08em;
+  color: var(--fog);
+}
+.som-row { display: block; }
+.som-cell { display: inline-block; width: 1.2em; text-align: center; }
+.som-arq { color: var(--ember); }
+.som-ati { color: var(--amber); }
+.som-com { color: var(--sage); }
+.som-front { color: var(--cream); font-weight: 700; }
+
+/* Violações */
+.viol-list { display: flex; flex-direction: column; gap: 1rem; }
+.viol-item {
+  padding: 1rem 1.2rem; border-left: 3px solid var(--ember);
+  background: rgba(212,82,42,.05); font-size: .82rem;
+  line-height: 1.65; color: rgba(240,230,208,.8);
+  position: relative;
+}
+.viol-item::before {
+  content: attr(data-n);
+  font-family: 'Space Mono', monospace; font-size: .6rem;
+  color: var(--ember); display: block; margin-bottom: .4rem;
+  letter-spacing: .1em;
+}
+
+/* Supressão */
+.supressao-items { display: flex; flex-direction: column; gap: .8rem; }
+.supra-row { display: flex; align-items: center; gap: 1rem; }
+.supra-label {
+  font-family: 'Space Mono', monospace; font-size: .62rem;
+  color: var(--fog); width: 13rem; flex-shrink: 0;
+  text-transform: uppercase; letter-spacing: .05em;
+}
+.supra-track { flex: 1; height: 16px; background: rgba(255,255,255,.04); position: relative; }
+.supra-fill {
+  height: 100%; background: var(--amber); opacity: .6; width: 0;
+  transition: width 1.5s cubic-bezier(.16,1,.3,1);
+}
+.supra-n {
+  font-family: 'Space Mono', monospace; font-size: .65rem;
+  color: var(--fog); width: 2rem; text-align: right;
+}
+
+/* ── DISPOSITIVO ── */
+#dispositivo {
+  background: var(--paper);
+  display: grid; grid-template-columns: 1fr 1fr; gap: 6vw; align-items: center;
+}
+.device-visual {
+  display: flex; justify-content: center; align-items: center;
+  padding: 4rem 0;
+}
+.watch-wrap { position: relative; width: 200px; height: 220px; }
+.watch-body {
+  width: 140px; height: 160px;
+  background: linear-gradient(135deg, #2a2220, #1a1510);
+  border-radius: 28px; margin: 0 auto;
+  border: 2px solid rgba(200,146,42,.4);
+  box-shadow: 0 0 60px rgba(200,146,42,.15), inset 0 1px 0 rgba(255,255,255,.05);
+  position: relative; overflow: hidden;
+}
+.watch-screen {
+  position: absolute; inset: 12px; background: #0d0b08;
+  border-radius: 18px; display: flex; flex-direction: column;
+  justify-content: center; align-items: center; gap: .4rem;
+}
+.watch-alert {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--ember); animation: pulse-alert 2s ease-in-out infinite;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .9rem;
+}
+@keyframes pulse-alert {
+  0%,100% { box-shadow: 0 0 0 0 rgba(212,82,42,.6); }
+  50% { box-shadow: 0 0 0 12px rgba(212,82,42,0); }
+}
+.watch-text {
+  font-family: 'Space Mono', monospace; font-size: .42rem;
+  color: var(--gold); letter-spacing: .1em; text-align: center;
+}
+.watch-strap {
+  width: 60px; height: 25px;
+  background: linear-gradient(to bottom, #2a2220, #1a1510);
+  border: 1px solid rgba(200,146,42,.2);
+  margin: 0 auto;
+}
+.watch-strap.top { border-radius: 4px 4px 0 0; margin-bottom: 0; }
+.watch-strap.bot { border-radius: 0 0 4px 4px; margin-top: 0; }
+.watch-btn {
+  position: absolute; right: -10px; top: 50%; transform: translateY(-50%);
+  width: 8px; height: 30px; background: #2a2220;
+  border-radius: 2px; border: 1px solid rgba(200,146,42,.3);
+}
+.orbit-small {
+  position: absolute; inset: -30px; border-radius: 50%;
+  border: 1px dashed rgba(200,146,42,.2);
+  animation: orbit-spin 20s linear infinite;
+}
+.orbit-dot-s {
+  position: absolute; width: 5px; height: 5px; border-radius: 50%;
+  background: var(--gold); top: -2.5px; left: 50%; transform: translateX(-50%);
+}
+.device-text { }
+.device-flow {
+  margin-top: 2.5rem;
+  display: flex; flex-direction: column; gap: 0;
+}
+.flow-step {
+  display: flex; align-items: flex-start; gap: 1.2rem;
+  padding: 1.2rem 0; border-bottom: 1px solid rgba(200,146,42,.1);
+  opacity: 0; transform: translateX(-20px);
+  transition: opacity .6s, transform .6s;
+}
+.flow-step.visible { opacity: 1; transform: translateX(0); }
+.flow-step:last-child { border-bottom: none; }
+.flow-icon {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 1px solid rgba(200,146,42,.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .9rem; flex-shrink: 0; color: var(--gold);
+}
+.flow-label {
+  font-family: 'Space Mono', monospace; font-size: .62rem;
+  text-transform: uppercase; letter-spacing: .1em; color: var(--gold);
+  margin-bottom: .2rem;
+}
+.flow-desc { font-size: .85rem; color: var(--fog); line-height: 1.6; }
+.future-tag {
+  display: inline-block; margin-top: 2rem;
+  font-family: 'Space Mono', monospace; font-size: .62rem;
+  text-transform: uppercase; letter-spacing: .15em;
+  color: var(--fog); border: 1px solid rgba(200,146,42,.2);
+  padding: .4rem 1rem;
+}
+
+/* ── EQUIPE ── */
+#equipe { background: var(--ink); }
+.equipe-grid {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: 1px; background: rgba(200,146,42,.1);
+  margin-top: 4rem; border: 1px solid rgba(200,146,42,.1);
+}
+.membro-card {
+  background: var(--ink); padding: 2.5rem 1.5rem;
+  text-align: center; cursor: default;
+  transition: background .3s;
+  opacity: 0; transform: translateY(20px);
+  transition: background .3s, opacity .6s, transform .6s;
+}
+.membro-card.visible { opacity: 1; transform: translateY(0); }
+.membro-card:hover { background: var(--glow); }
+.membro-avatar {
+  width: 64px; height: 64px; border-radius: 50%;
+  border: 1px solid rgba(200,146,42,.3);
+  margin: 0 auto 1.2rem;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem;
+  background: radial-gradient(circle, rgba(200,146,42,.1), transparent);
+}
+.membro-nome {
+  font-family: 'Playfair Display', serif;
+  font-size: .95rem; font-weight: 700;
+  line-height: 1.3; margin-bottom: .5rem;
+}
+.membro-papel {
+  font-family: 'Space Mono', monospace; font-size: .6rem;
+  text-transform: uppercase; letter-spacing: .12em; color: var(--gold);
+}
+
+/* ── MANIFESTO ── */
+#manifesto {
+  background: var(--paper);
+  text-align: center; padding: 10vw 5vw;
+}
+.manifesto-text {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 4vw, 3.2rem);
+  font-weight: 700; line-height: 1.3;
+  letter-spacing: -.02em; max-width: 22ch; margin: 0 auto 3rem;
+}
+.manifesto-text em { color: var(--gold); font-style: italic; display: block; }
+.manifesto-sub {
+  font-size: .9rem; color: var(--fog); max-width: 50ch;
+  margin: 0 auto; line-height: 1.8;
+}
+.manifesto-line {
+  width: 60px; height: 2px; background: var(--gold);
+  margin: 3rem auto;
+}
+
+/* ── FOOTER ── */
+footer {
+  padding: 4vw 5vw; border-top: 1px solid rgba(200,146,42,.15);
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 1rem;
+}
+.footer-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem; color: var(--gold);
+}
+.footer-meta {
+  font-family: 'Space Mono', monospace; font-size: .62rem;
+  color: var(--fog); letter-spacing: .1em; text-align: right;
+}
+.footer-lbi {
+  font-family: 'Space Mono', monospace; font-size: .6rem;
+  color: rgba(200,146,42,.5); letter-spacing: .1em;
+}
+
+/* ── SCROLL INDICATOR ── */
+.scroll-line {
+  position: fixed; top: 0; left: 0; height: 2px;
+  background: linear-gradient(to right, var(--ember), var(--gold), var(--amber));
+  z-index: 200; transition: width .1s linear;
+}
+
+@media (max-width: 768px) {
+  .dash-grid, #dispositivo, .equipe-grid { grid-template-columns: 1fr; }
+  .pipeline-wrap { flex-direction: column; }
+  .pipeline-step { border-right: 1px solid rgba(200,146,42,.2); border-bottom: none; }
+  .pipeline-step:last-child { border-bottom: 1px solid rgba(200,146,42,.2); }
+  .step-arrow { display: none; }
+  .pipeline-detail.open { grid-template-columns: 1fr; }
+  .hero-stats { gap: 2rem; }
+  nav .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="scroll-line" id="scrollLine"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">ACUENDA · AuriAll</div>
+  <ul class="nav-links">
+    <li><a href="#pipeline">Pipeline</a></li>
+    <li><a href="#dashboard">Dados</a></li>
+    <li><a href="#dispositivo">Dispositivo</a></li>
+    <li><a href="#equipe">Equipe</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-orbit">
+    <div class="orbit-ring"><div class="orbit-dot"></div></div>
+    <div class="orbit-ring"><div class="orbit-dot"></div></div>
+    <div class="orbit-ring"><div class="orbit-dot"></div></div>
+    <div class="orbit-ring"><div class="orbit-dot"></div></div>
+  </div>
+
+  <div style="position:relative">
+    <div class="hero-kicker">Infraestrutura de Evidência · PcD · LBI</div>
+    <h1 class="hero-title">
+      ACUENDA
+      <em>AuriAll</em>
+      <span class="line-3">da planilha ao insight vivo</span>
+    </h1>
+    <p class="hero-desc">
+      Um pipeline de inteligência artificial que transforma relatos subjetivos de barreiras enfrentadas por Pessoas com Deficiência em evidência topológica, navegável e juridicamente fundamentada — para que comitês possam agir, não apenas registrar.
+    </p>
+    <div class="hero-stats">
+      <div>
+        <span class="hero-stat-n" id="cnt-relatos">0</span>
+        <span class="hero-stat-l">relatos analisados</span>
+      </div>
+      <div>
+        <span class="hero-stat-n" id="cnt-criticos">0</span>
+        <span class="hero-stat-l">violações graves</span>
+      </div>
+      <div>
+        <span class="hero-stat-n" id="cnt-setores">0</span>
+        <span class="hero-stat-l">setores mapeados</span>
+      </div>
+      <div>
+        <span class="hero-stat-n" id="cnt-solucoes">0</span>
+        <span class="hero-stat-l">soluções replicáveis</span>
+      </div>
+    </div>
+    <a class="hero-cta" href="#pipeline">Explorar o pipeline</a>
+  </div>
+</section>
+
+<!-- PIPELINE -->
+<section id="pipeline">
+  <div class="section-rule"></div>
+  <div class="section-kicker">Como funciona</div>
+  <h2 class="section-title">Da entrada à <em>evidência</em></h2>
+  <p style="color:var(--fog);max-width:55ch;line-height:1.75;font-size:.95rem">
+    Quatro etapas encadeadas. A saída de cada uma é a entrada da próxima. As notas geradas retroalimentam o próximo ciclo de análise.
+  </p>
+
+  <div class="pipeline-wrap" id="pipelineWrap">
+    <div class="pipeline-step" data-step="0" onclick="toggleStep(0)">
+      <div class="step-num">01 ·</div>
+      <span class="step-icon">📥</span>
+      <div class="step-name">Entrada</div>
+      <div class="step-desc">Planilhas sem padrão, sem labels, de múltiplos setores</div>
+      <span class="step-arrow">→</span>
+    </div>
+    <div class="pipeline-step" data-step="1" onclick="toggleStep(1)">
+      <div class="step-num">02 ·</div>
+      <span class="step-icon">🧠</span>
+      <div class="step-name">Triagem</div>
+      <div class="step-desc">SOM + K-means identifica padrões invisíveis a olho nu</div>
+      <span class="step-arrow">→</span>
+    </div>
+    <div class="pipeline-step" data-step="2" onclick="toggleStep(2)">
+      <div class="step-num">03 ·</div>
+      <span class="step-icon">🔍</span>
+      <div class="step-name">Avaliação</div>
+      <div class="step-desc">Score de criticidade, soluções replicáveis priorizadas</div>
+      <span class="step-arrow">→</span>
+    </div>
+    <div class="pipeline-step" data-step="3" onclick="toggleStep(3)">
+      <div class="step-num">04 ·</div>
+      <span class="step-icon">📁</span>
+      <div class="step-name">Vault</div>
+      <div class="step-desc">Notas .md navegáveis com [[links]] — retroalimentam o próximo ciclo</div>
+      <span class="step-arrow">→</span>
+    </div>
+  </div>
+
+  <div class="pipeline-detail" id="pipelineDetail">
+    <div class="detail-text" id="detailText"></div>
+    <div class="detail-code" id="detailCode"></div>
+  </div>
+</section>
+
+<!-- DASHBOARD -->
+<section id="dashboard">
+  <div class="section-rule"></div>
+  <div class="section-kicker">Dados — Base #TESTE3 · 762 registros</div>
+  <h2 class="section-title">O que os dados <em>revelaram</em></h2>
+
+  <div class="dash-grid" id="dashGrid">
+
+    <!-- Clusters -->
+    <div class="dash-card">
+      <div class="dash-card-title">Distribuição por tipo de barreira</div>
+      <div class="cluster-bars">
+        <div class="cluster-row">
+          <div class="cluster-label">
+            <span>👅 Atitudinal (Capacitismo)</span>
+            <span>61.5% · 469 relatos</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill bar-ati" data-w="61.5"></div></div>
+        </div>
+        <div class="cluster-row">
+          <div class="cluster-label">
+            <span>💻 Comunicação / Digital</span>
+            <span>24.3% · 185 relatos</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill bar-com" data-w="24.3"></div></div>
+        </div>
+        <div class="cluster-row">
+          <div class="cluster-label">
+            <span>🏗️ Arquitetônica / Física</span>
+            <span>14.2% · 108 relatos</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill bar-arq" data-w="14.2"></div></div>
+        </div>
+      </div>
+      <div style="margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid rgba(200,146,42,.1)">
+        <div style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--fog);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.8rem">Por setor</div>
+        <div id="setorBars"></div>
+      </div>
+    </div>
+
+    <!-- SOM Map -->
+    <div class="dash-card">
+      <div class="dash-card-title">Mapa SOM — U-Matrix</div>
+      <div class="som-grid" id="somGrid"></div>
+      <div style="margin-top:1.5rem;display:flex;gap:1.5rem;flex-wrap:wrap">
+        <span style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--fog)">░ interior &nbsp; ▒ transição</span>
+        <span style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--ember)">A = Arquitetônica</span>
+        <span style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--amber)">T = Atitudinal</span>
+        <span style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--sage)">C = Comunicação</span>
+      </div>
+    </div>
+
+    <!-- Violações -->
+    <div class="dash-card">
+      <div class="dash-card-title">Violações graves · 87 casos · 11.4%</div>
+      <div class="viol-list">
+        <div class="viol-item" data-n="CASO CRÍTICO #01 · PAE / EMERGÊNCIA">
+          Sou usuária de cadeira de rodas motorizada. O Plano de Abandono de Emergência deste bloco prevê evacuação exclusivamente pela Escada Norte — inacessível para cadeirantes. Não existe rota alternativa nem protocolo de resgate documentado.
+        </div>
+        <div class="viol-item" data-n="CASO CRÍTICO #02 · RETALIAÇÃO APÓS DENÚNCIA">
+          Usei o Canal de Ética para denunciar assédio relacionado à minha deficiência. Em 30 dias fui transferida compulsoriamente para outra unidade, com percurso 3x maior — impossível no meu estado de saúde.
+        </div>
+        <div class="viol-item" data-n="CASO CRÍTICO #03 · ALERTAS SONOROS · SURDEZ BILATERAL">
+          O sistema de alertas de segurança da planta — vazamento de gás, parada de emergência — é 100% sonoro. Não há sistema visual redundante. Trabalho em área de maquinário pesado.
+        </div>
+      </div>
+    </div>
+
+    <!-- Supressão -->
+    <div class="dash-card">
+      <div class="dash-card-title">Padrões de supressão — Ouvidoria</div>
+      <div class="supressao-items" id="supressaoItems"></div>
+      <div style="margin-top:2rem;padding:1.2rem;background:rgba(212,82,42,.06);border-left:3px solid var(--ember)">
+        <div style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--ember);letter-spacing:.1em;margin-bottom:.5rem">EVIDÊNCIA DE SUPRESSÃO BUROCRÁTICA</div>
+        <div style="font-size:.85rem;color:rgba(240,230,208,.7);line-height:1.7">
+          <strong style="color:var(--cream)">60 casos (50%)</strong> onde a resolução registrada não corresponde ao relato original. Esta é a assinatura digital da supressão.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- DISPOSITIVO -->
+<section id="dispositivo">
+  <div class="section-rule"></div>
+  <div class="device-visual">
+    <div class="watch-wrap">
+      <div class="orbit-small"><div class="orbit-dot-s"></div></div>
+      <div class="watch-strap top"></div>
+      <div class="watch-body">
+        <div class="watch-btn"></div>
+        <div class="watch-screen">
+          <div class="watch-alert">🆘</div>
+          <div class="watch-text">ACUENDA<br>ATIVO</div>
+          <div style="font-family:'Space Mono',monospace;font-size:.35rem;color:var(--fog);margin-top:.3rem">AES-256 · LOCAL</div>
+        </div>
+      </div>
+      <div class="watch-strap bot"></div>
+    </div>
+  </div>
+  <div class="device-text">
+    <div class="section-kicker">Horizonte · Protótipo conceitual</div>
+    <h2 class="section-title">O dispositivo <em>no corpo</em></h2>
+    <p style="color:var(--fog);font-size:.95rem;line-height:1.8;max-width:48ch;margin-bottom:1.5rem">
+      O sonho é que a pessoa que está sendo violentada, perseguida ou excluída possa se comunicar diretamente — no momento exato — sem depender de um canal que pode estar comprometido.
+    </p>
+    <div class="device-flow">
+      <div class="flow-step">
+        <div class="flow-icon">⌚</div>
+        <div>
+          <div class="flow-label">Dispositivo</div>
+          <div class="flow-desc">Relógio com LCD ampliado, botão físico discreto, interface adaptada para pessoas neurodivergentes e com deficiência visual.</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-icon">🔒</div>
+        <div>
+          <div class="flow-label">Store-and-forward criptografado</div>
+          <div class="flow-desc">Dado armazenado localmente com AES-256. Sincroniza apenas em rede confiável. Sem nuvem exposta, sem API pública.</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-icon">⚡</div>
+        <div>
+          <div class="flow-label">Entrada direta no pipeline</div>
+          <div class="flow-desc">O toque no relógio gera <code style="color:var(--amber);font-family:'Space Mono',monospace;font-size:.8rem">violacao_critica=True</code> com timestamp e localização — sem ônus de prova sobre a vítima.</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-icon">🎯</div>
+        <div>
+          <div class="flow-label">Acionamento do setor responsável</div>
+          <div class="flow-desc">O comitê de acompanhamento recebe em tempo real. O caso entra no vault e é rastreado até resolução documentada.</div>
+        </div>
+      </div>
+    </div>
+    <div class="future-tag">Protótipo conceitual · Próxima fase</div>
+  </div>
+</section>
+
+<!-- EQUIPE -->
+<section id="equipe">
+  <div class="section-rule"></div>
+  <div class="section-kicker">Quem fez</div>
+  <h2 class="section-title">Cinco pessoas que <em>juntaram</em></h2>
+  <p style="color:var(--fog);max-width:55ch;line-height:1.75;font-size:.95rem">
+    Hardware, dados, código, direito, experiência vivida. Cada uma trouxe o que só ela podia trazer.
+  </p>
+  <div class="equipe-grid">
+    <div class="membro-card">
+      <div class="membro-avatar">🌿</div>
+      <div class="membro-nome">Patrícia Soares da Silva</div>
+      <div class="membro-papel">Estratégia & Visão</div>
+    </div>
+    <div class="membro-card">
+      <div class="membro-avatar">⚡</div>
+      <div class="membro-nome">Lika Carla de Deus e Silva</div>
+      <div class="membro-papel">Hardware & Prototipagem</div>
+    </div>
+    <div class="membro-card">
+      <div class="membro-avatar">🔥</div>
+      <div class="membro-nome">Elizama Maria da Silva</div>
+      <div class="membro-papel">Dados & Pipeline</div>
+    </div>
+    <div class="membro-card">
+      <div class="membro-avatar">🛠️</div>
+      <div class="membro-nome">Arthur Alves de Araújo</div>
+      <div class="membro-papel">Engenharia & Sistemas</div>
+    </div>
+    <div class="membro-card">
+      <div class="membro-avatar">🌍</div>
+      <div class="membro-nome">Goyamú Kajurunyá Chaves Sampaio</div>
+      <div class="membro-papel">Comunidade & Ativismo</div>
+    </div>
+  </div>
+</section>
+
+<!-- MANIFESTO -->
+<section id="manifesto">
+  <div class="section-rule"></div>
+  <p class="manifesto-text">
+    A exclusão não é acidente.
+    <em>É arquitetura.</em>
+    Os dados são a barricada.
+  </p>
+  <div class="manifesto-line"></div>
+  <p class="manifesto-sub">
+    ACUENDA AuriAll é uma infraestrutura de evidência. Não pede inclusão — demonstra o custo operacional e legal de não incluir. Transforma a impotência em dado rastreável, o dado em responsabilidade, a responsabilidade em mudança material.
+  </p>
+  <div style="margin-top:3rem;display:flex;justify-content:center;gap:2rem;flex-wrap:wrap">
+    <span style="font-family:'Space Mono',monospace;font-size:.65rem;color:var(--fog);border:1px solid rgba(200,146,42,.2);padding:.4rem 1rem">LBI · Lei Brasileira de Inclusão</span>
+    <span style="font-family:'Space Mono',monospace;font-size:.65rem;color:var(--fog);border:1px solid rgba(200,146,42,.2);padding:.4rem 1rem">NBR 9050 · Acessibilidade</span>
+    <span style="font-family:'Space Mono',monospace;font-size:.65rem;color:var(--fog);border:1px solid rgba(200,146,42,.2);padding:.4rem 1rem">WCAG 2.1 · Acessibilidade Digital</span>
+    <span style="font-family:'Space Mono',monospace;font-size:.65rem;color:var(--fog);border:1px solid rgba(200,146,42,.2);padding:.4rem 1rem">SOM + K-means · Machine Learning</span>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-logo">ACUENDA AuriAll</div>
+    <div class="footer-lbi" style="margin-top:.5rem">Da planilha ao insight vivo · SOM + K-Means · Vault Obsidian</div>
+  </div>
+  <div class="footer-meta">
+    Patrícia · Lika · Elizama · Arthur · Goyamú<br>
+    <span style="color:rgba(200,146,42,.3)">Feito com muito código e mais amor ainda.</span>
+  </div>
+</footer>
+
+<script>
+// ── CONTADORES ANIMADOS ──
+function animCount(el, target, duration=2000) {
+  let start = null;
+  const step = ts => {
+    if (!start) start = ts;
+    const p = Math.min((ts-start)/duration, 1);
+    const ease = 1-Math.pow(1-p, 4);
+    el.textContent = Math.floor(ease * target).toLocaleString('pt-BR');
+    if (p < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+setTimeout(() => {
+  animCount(document.getElementById('cnt-relatos'), 762);
+  animCount(document.getElementById('cnt-criticos'), 87);
+  animCount(document.getElementById('cnt-setores'), 8);
+  animCount(document.getElementById('cnt-solucoes'), 8);
+}, 800);
+
+// ── PIPELINE STEPS ──
+const stepData = [
+  {
+    text: `A entrada aceita planilhas <strong style="color:var(--cream)">sem padrão algum</strong> — colunas com nomes diferentes entre setores, dados ausentes, datas em formatos incompatíveis, textos livres misturados com campos numéricos. O sistema detecta automaticamente o que há de útil em cada arquivo e consolida tudo num DataFrame único.<br><br>Isso elimina o pré-requisito de que "alguém tem que arrumar a planilha antes". O dado entra como existe na realidade.`,
+    code: `# Aceita qualquer planilha\narquivos = glob("./Dados/*.xlsx") +\n           glob("./Dados/*.csv")\n\n# Colunas detectadas automaticamente\ndf['_txt'] = df[cols_texto]\n    .fillna('')\n    .agg(' '.join, axis=1)\n    .str.lower()\n\n# 640 registros · 8 setores · 60 colunas`
+  },
+  {
+    text: `O <strong style="color:var(--cream)">SOM (Mapa Auto-Organizável)</strong> aprende a "geografia" dos relatos: quais são parecidos entre si, quais estão em regiões diferentes. É como um mapa que se desenha sozinho, sem que ninguém precise dizer o que é cada coisa.<br><br>Depois, o <strong style="color:var(--cream)">K-means</strong> coloca etiquetas nas regiões mais óbvias do mapa. O resultado são 3 clusters que representam os 3 tipos de barreira da LBI — sem que nenhuma barreira fosse rotulada manualmente.`,
+    code: `# Etapa 1: SOM aprende a geometria\nsom = MiniSom(10, 10, n_features,\n    sigma=1.5, learning_rate=0.5,\n    random_seed=42)\nsom.train(X, num_iteration=500)\n\n# Etapa 2: K-means nomeia os grupos\nkm = KMeans(n_clusters=3, n_init=10)\ndf['Cluster'] = km.fit_predict(X)\n\n# Silhouette Score: 0.595`
+  },
+  {
+    text: `Cada cluster recebe um <strong style="color:var(--cream)">score de criticidade</strong> de 0 a 10, calculado a partir de volume, severidade, tempo em aberto, complexidade e ambiguidade. O score determina a prioridade de ação dos comitês.<br><br>O banco de 8 soluções já implementadas é cruzado com os clusters e as soluções são recomendadas em ordem de custo-benefício — da mais simples à mais complexa.`,
+    code: `# Score composto por cluster\nscore = (\n    volume       * 2.0 +  # 20%\n    severidade   * 3.0 +  # 30%\n    tempo_aberto * 2.0 +  # 20%\n    ambiguidade  * 1.5 +  # 15%\n    incerteza    * 1.5    # 15%\n) * 10\n\n# Soluções ordenadas por custo\nsols = banco[banco.tipo == cluster]\n       .sort_values('custo')`
+  },
+  {
+    text: `O vault é uma pasta de arquivos <code style="color:var(--amber);font-family:'Space Mono',monospace;font-size:.85em">.md</code> com <code style="color:var(--amber);font-family:'Space Mono',monospace;font-size:.85em">[[links]]</code> que formam um grafo navegável no Obsidian. Cada nota é um território de experiência — não coordenadas, mas texto denso com relatos reais.<br><br>O que torna o vault vivo: um snapshot <code style="color:var(--amber);font-family:'Space Mono',monospace;font-size:.85em">.json</code> é salvo ao final de cada rodada. Na próxima execução, as notas mostram automaticamente o que mudou — quantos relatos a mais, quantas violações novas.`,
+    code: `vault/\n  Índice.md              ← grafo de entrada\n  Clusters/\n    Arquitetônica.md\n    Atitudinal.md\n    Comunicação.md\n  Fronteiras/\n    Arquitetônica_x_Atitudinal.md\n  Regiões Críticas/\n    Violações Graves.md\n  Memória/\n    snapshot_2026-04-22.json  ♻️`
+  }
+];
+
+let activeStep = -1;
+function toggleStep(i) {
+  const steps = document.querySelectorAll('.pipeline-step');
+  const detail = document.getElementById('pipelineDetail');
+  if (activeStep === i) {
+    steps.forEach(s => s.classList.remove('active'));
+    detail.classList.remove('open');
+    activeStep = -1;
+    return;
+  }
+  steps.forEach(s => s.classList.remove('active'));
+  steps[i].classList.add('active');
+  document.getElementById('detailText').innerHTML = stepData[i].text;
+  document.getElementById('detailCode').textContent = stepData[i].code;
+  detail.classList.add('open');
+  activeStep = i;
+  detail.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+// ── SOM GRID ──
+const somData = [
+  "▒░▒░A░A░░▒",
+  "A░▒░░▒░T░░",
+  "░T░▒░░▒░░░",
+  "░░T░░░▒A░░",
+  "░░A░░▒░▒A░",
+  "▒T░░A░░▒░A",
+  "░▒▒T░▒░A░░",
+  "▒░░░░░CA░░",
+  "░░▒░░▒░▒C░",
+  "░░░░▒C▒░░░"
+];
+const somEl = document.getElementById('somGrid');
+somData.forEach((row, i) => {
+  const rowEl = document.createElement('span');
+  rowEl.className = 'som-row';
+  rowEl.innerHTML = `<span style="font-size:.6rem;color:rgba(138,122,106,.4);margin-right:.4rem">${String(i).padStart(2,'0')}</span>`;
+  [...row].forEach(ch => {
+    const cell = document.createElement('span');
+    cell.className = 'som-cell';
+    if (ch === 'A') { cell.className += ' som-arq som-front'; }
+    else if (ch === 'T') { cell.className += ' som-ati som-front'; }
+    else if (ch === 'C') { cell.className += ' som-com som-front'; }
+    cell.textContent = ch;
+    rowEl.appendChild(cell);
+  });
+  somEl.appendChild(rowEl);
+});
+
+// ── SETOR BARS ──
+const setores = [
+  { nome:'TI Sistemas',        arq:19, ati:1,  com:80 },
+  { nome:'Op. Campo',          arq:4,  ati:79, com:17 },
+  { nome:'Engenharia',         arq:14, ati:76, com:10 },
+  { nome:'Jurídico',           arq:10, ati:72, com:18 },
+  { nome:'Saúde Ocupacional',  arq:13, ati:66, com:21 },
+  { nome:'Ouvidoria',          arq:15, ati:63, com:22 },
+  { nome:'RH',                 arq:22, ati:57, com:21 },
+  { nome:'Comitê D&I',         arq:17, ati:55, com:29 },
+];
+const setorEl = document.getElementById('setorBars');
+setores.forEach(s => {
+  const row = document.createElement('div');
+  row.style.cssText = 'display:flex;align-items:center;gap:.8rem;margin-bottom:.6rem';
+  row.innerHTML = `
+    <span style="font-family:'Space Mono',monospace;font-size:.6rem;color:var(--fog);width:9rem;flex-shrink:0">${s.nome}</span>
+    <div style="flex:1;height:8px;display:flex;overflow:hidden">
+      <div style="height:100%;width:${s.arq}%;background:var(--ember);opacity:.7"></div>
+      <div style="height:100%;width:${s.ati}%;background:var(--amber);opacity:.7"></div>
+      <div style="height:100%;width:${s.com}%;background:var(--sage);opacity:.7"></div>
+    </div>`;
+  setorEl.appendChild(row);
+});
+
+// ── SUPRESSÃO ──
+const supressaoData = [
+  { label:'Downgrade severidade',       n:19 },
+  { label:'Resolvido sem evidência',    n:19 },
+  { label:'Reaberto após pressão',      n:17 },
+  { label:'Encaminhado sem prazo',      n:17 },
+  { label:'Arquivado sem análise',      n:15 },
+  { label:'+180 dias em análise',       n:15 },
+  { label:'Resposta padrão s/ ação',    n:11 },
+];
+const maxN = Math.max(...supressaoData.map(d=>d.n));
+const supEl = document.getElementById('supressaoItems');
+supressaoData.forEach(d => {
+  const row = document.createElement('div');
+  row.className = 'supra-row';
+  row.innerHTML = `
+    <span class="supra-label">${d.label}</span>
+    <div class="supra-track">
+      <div class="supra-fill" data-w="${100*d.n/maxN}"></div>
+    </div>
+    <span class="supra-n">${d.n}</span>`;
+  supEl.appendChild(row);
+});
+
+// ── SCROLL LINE ──
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  const pct = (h.scrollTop/(h.scrollHeight - h.clientHeight)) * 100;
+  document.getElementById('scrollLine').style.width = pct+'%';
+});
+
+// ── INTERSECTION OBSERVER (animate on scroll) ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      // Anima barras
+      entry.target.querySelectorAll('.bar-fill[data-w]').forEach(b => {
+        setTimeout(() => { b.style.width = b.dataset.w+'%'; }, 200);
+      });
+      entry.target.querySelectorAll('.supra-fill[data-w]').forEach(b => {
+        setTimeout(() => { b.style.width = b.dataset.w+'%'; }, 200);
+      });
+    }
+  });
+}, { threshold: 0.15 });
+
+// Observa elementos animáveis
+document.querySelectorAll('.pipeline-step, .membro-card, .flow-step, .dash-card').forEach(el => {
+  observer.observe(el);
+});
+
+// Ativa barras do dashboard quando visível
+const dashObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      document.querySelectorAll('.bar-fill[data-w]').forEach((b,i) => {
+        setTimeout(() => { b.style.width = b.dataset.w+'%'; }, 300 + i*100);
+      });
+      document.querySelectorAll('.supra-fill[data-w]').forEach((b,i) => {
+        setTimeout(() => { b.style.width = b.dataset.w+'%'; }, 300 + i*80);
+      });
+      dashObs.disconnect();
+    }
+  });
+}, { threshold: 0.1 });
+dashObs.observe(document.getElementById('dashGrid'));
+
+// Delay entre cards do pipeline
+document.querySelectorAll('.pipeline-step').forEach((el, i) => {
+  el.style.transitionDelay = `${i * 0.1}s`;
+});
+document.querySelectorAll('.membro-card').forEach((el, i) => {
+  el.style.transitionDelay = `${i * 0.08}s`;
+});
+document.querySelectorAll('.flow-step').forEach((el, i) => {
+  el.style.transitionDelay = `${i * 0.12}s`;
+});
+</script>
+</body>
+</html>
